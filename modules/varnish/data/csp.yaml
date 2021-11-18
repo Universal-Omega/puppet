@@ -153,3 +153,6 @@ connect-src:
   - '*.wiktionary.org'
   - 'cdn.jsdelivr.net'
   - 'storage.googleapis.com'
+
+report-uri:
+  - 'https://meta.miraheze.org/w/api.php?action=cspreport&format=json&'
