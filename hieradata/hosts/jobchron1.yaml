@@ -1,4 +1,0 @@
-redis::heap: '1000mb'
-
-php::php_version: '7.3'
-base::firewall::mode: ferm
