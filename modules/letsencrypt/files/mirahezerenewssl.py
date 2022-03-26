@@ -28,7 +28,7 @@ def post():
                 os.system(f'/var/lib/nagios/ssl-acme -s {content['SERVICESTATE']} -t {content['SERVICESTATETYPE']} -u {content['SERVICEDESC']} >> /var/log/letsencrypt/ssl-renew.log 2>&1')
                 lock_acquired = True
             finally:
-                lock.release(),
+                lock.release()
                 lock_acquired = True
     return '', 204
 
