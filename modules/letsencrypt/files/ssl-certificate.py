@@ -41,7 +41,7 @@ class SslCertificate:
     def __init__(self):
         self.csr = args['csr']
         if args['overwrite']:
-            self.overwrite = f'--cert-name {args['domain']}'
+            self.overwrite = '--cert-name ' + args['domain']
         else:
             self.overwrite = ''
         self.domain = args['domain']
