@@ -24,7 +24,7 @@ def post():
         with lock:
             lock.acquire()
             try:
-                logging.info(f'Renewed ssl certificate: {content['SERVICEDESC']}')
+                logging.info('Renewed ssl certificate: ' + content['SERVICEDESC'])
                 os.system('/var/lib/nagios/ssl-acme -s %s -t %s -u %s >> /var/log/letsencrypt/ssl-renew.log 2>&1' % (content['SERVICESTATE'], content['SERVICESTATETYPE'], content['SERVICEDESC']))
                 lock_acquired = True
             finally:
