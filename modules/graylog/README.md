@@ -162,7 +162,6 @@ class { '::graylog::server':
 
 * `graylog::repository`: Manages the official Graylog package repository
 * `graylog::server`: Installs, configures and manages the Graylog server service
-* `graylog::allinone`: Creates a full Graylog setup including MongoDB and Elasticsearch
 
 #### Private Classes
 
@@ -266,23 +265,6 @@ Available options: `running`, 'stopped'
 This setting is used to configure if the Graylog service should be enabled.
 It defaults to `true`.
 
-#### Class: graylog::allinone
-
-The `graylog::allinone` class configures a complete Graylog system including
-MongoDB and Elasticsearch.
-
-**Note:** This is nice to quickly setup a running system on a single node but
-should only be used for testing or really small setups.
-Use the `graylog::server` class for production deployments.
-
-This class is using two Puppet modules from the forge to setup a complete system.
-Please make sure you have these installed before using the `graylog::allinone` class.
-
-Requirements:
-
-* [puppet/mongodb](https://forge.puppet.com/puppet/mongodb)
-* [elastic/elasticsearch](https://forge.puppet.com/elastic/elasticsearch)
-
 ##### `elasticsearch`
 
 This setting is used to configure the `elasticsearch` Puppet module.
@@ -330,17 +312,6 @@ Supported platforms:
 * RedHat/CentOS
 
 ## Development
-
-You can test this module by using [Vagrant](https://www.vagrantup.com/).
-It uses the `graylog::allinone` class to setup a complete system inside
-the Vagrant box.
-
-```
-$ vagrant up centos7
-$ vagrant provision centos7
-```
-
-This is a quick way to see how the module behaves on a real machine.
 
 Please see the [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
 files for further details.
