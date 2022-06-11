@@ -61,8 +61,8 @@ class mongodb::repo (
 
         $mongover = split($version, '[.]')
         $location = $facts['os']['name'] ? {
-          'Debian' => "https://${repo_domain}/apt/debian",
-          'Ubuntu' => "https://${repo_domain}/apt/ubuntu",
+          'Debian' => "http://${repo_domain}/apt/debian",
+          'Ubuntu' => "http://${repo_domain}/apt/ubuntu",
           default  => undef
         }
         $release     = "buster/${repo_path}/${mongover[0]}.${mongover[1]}"
