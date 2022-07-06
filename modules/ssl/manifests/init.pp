@@ -11,13 +11,15 @@ class ssl {
         require => Package['certbot'],
     }
 
-    ['/var/www', '/var/www/.well-known', '/var/www/.well-known/acme-challenge'].each |$folder| {
-        file { "${folder}":
-            ensure => directory,
-            owner  => 'root',
-            group  => 'root',
-            mode   => '0755',
-        }
+    file { [
+        '/var/www',
+        '/var/www/.well-known',
+        '/var/www/.well-known/acme-challenge',
+    ]:
+        ensure => directory,
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0755',
     }
 
     file { '/var/www/challenges':
