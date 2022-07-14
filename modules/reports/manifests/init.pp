@@ -52,12 +52,9 @@ class reports {
         'upload_max_filesize' => '100M',
     }
 
-    $php_version = lookup('php::php_version')
-
     # Install the runtime
     class { '::php':
         ensure         => present,
-        version        => $php_version,
         sapis          => ['cli', 'fpm'],
         config_by_sapi => {
             'cli' => $config_cli,
@@ -76,7 +73,7 @@ class reports {
 
     $core_extensions.each |$extension| {
         php::extension { $extension:
-            package_name => "php${php_version}-${extension}",
+            package_name => "php${php::version}-${extension}",
             sapis        => ['cli', 'fpm'],
         }
     }
@@ -95,7 +92,7 @@ class reports {
         default:
             sapis        => ['cli', 'fpm'];
         'xml':
-            package_name => "php${php_version}-xml",
+            package_name => "php${php::version}-xml",
             priority     => 15;
         'igbinary':
              config   => {
@@ -106,7 +103,7 @@ class reports {
             package_name => '',
             priority     => 10;
         'mysqli':
-            package_name => "php${php_version}-mysql";
+            package_name => "php${php::version}-mysql";
         'pdo_mysql':
             package_name => '';
     }
