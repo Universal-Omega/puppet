@@ -22,10 +22,11 @@ probe mwhealth {
 	.interval = <%= @interval_check %>;
 	# <%= @interval_timeout %> should be our upper limit for responding to a fair light web request
 	.timeout = <%= @interval_timeout %>;
-	# At least 4 out of 5 checks must be successful
+	# At least 3 out of 5 checks must be successful
 	# to mark the backend as healthy
 	.window = 5;
-	.threshold = 4;
+        .threshold = 3;
+        .initial = 3;
 	.expected_response = 204;
 }
 
@@ -240,7 +241,7 @@ sub vcl_recv {
 
 	# Health checks, do not send request any further, if we're up, we can handle it
 	if (req.http.Host == "health.miraheze.org" && req.url == "/check") {
-		return (synth(200));
+		return (synth(204));
 	}
 
 	# Normalise Accept-Encoding for better cache hit ratio
