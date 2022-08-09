@@ -70,13 +70,13 @@ node 'mon141.miraheze.org' {
 }
 
 node /^mw1[234][12]\.miraheze\.org$/ {
+    role(mediawiki)
     include base
-    include role::mediawiki
 }
 
 node 'mwtask141.miraheze.org' {
+    role(mediawiki)
     include base
-    include role::mediawiki
 }
 
 node /^ns[12]\.miraheze\.org$/ {
@@ -109,8 +109,8 @@ node 'reports121.miraheze.org' {
 }
 
 node 'test131.miraheze.org' {
+    role(mediawiki)
     include base
-    include role::mediawiki
     include role::redis
     include mediawiki::jobqueue::chron
 }
