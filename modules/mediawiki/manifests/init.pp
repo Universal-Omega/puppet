@@ -184,7 +184,7 @@ class mediawiki(
     file { '/srv/mediawiki/config/OAuth2.key':
         ensure  => present,
         mode    => '0755',
-        source  => 'puppet:///private/mediawiki/OAuth2.key',
+        source  => 'puppet:///modules/private/mediawiki/OAuth2.key',
         require => File['/srv/mediawiki/config'],
     }
 

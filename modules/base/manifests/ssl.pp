@@ -12,7 +12,7 @@ class base::ssl {
 
     file { 'authority certificates':
         path    => '/etc/ssl/certs',
-        source  => 'puppet:///ssl/ca/',
+        source  => 'puppet:///modules/ssl/ca/',
         recurse => 'remote',
         require => Package['ca-certificates'],
     }

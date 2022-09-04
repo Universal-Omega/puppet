@@ -46,7 +46,7 @@ class postfix::dkim {
         mode   => '0600',
         owner  => 'opendkim',
         group  => 'opendkim',
-        source => 'puppet:///private/postfix/mail.private',
+        source => 'puppet:///modules/private/postfix/mail.private',
     }
 
     service { 'opendkim':

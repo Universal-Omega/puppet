@@ -68,8 +68,8 @@ define gluster::mount (
 
     if !defined(Package['glusterfs-client']) {
         package { 'glusterfs-client':
-            ensure   => installed,
-            require  => Class['gluster::apt'],
+            ensure  => installed,
+            require => Class['gluster::apt'],
         }
     }
 
@@ -82,7 +82,7 @@ define gluster::mount (
     if !defined(File['glusterfs.pem']) {
         file { 'glusterfs.pem':
             ensure => 'present',
-            source => 'puppet:///ssl/certificates/wildcard.miraheze.org-2020-2.crt',
+            source => 'puppet:///modules/ssl/certificates/wildcard.miraheze.org-2020-2.crt',
             path   => '/usr/lib/ssl/glusterfs.pem',
             owner  => 'root',
             group  => 'root',
@@ -92,7 +92,7 @@ define gluster::mount (
     if !defined(File['glusterfs.key']) {
         file { 'glusterfs.key':
             ensure => 'present',
-            source => 'puppet:///ssl-keys/wildcard.miraheze.org-2020-2.key',
+            source => 'puppet:///modules/ssl-keys/wildcard.miraheze.org-2020-2.key',
             path   => '/usr/lib/ssl/glusterfs.key',
             owner  => 'root',
             group  => 'root',
@@ -103,7 +103,7 @@ define gluster::mount (
     if !defined(File['glusterfs.ca']) {
         file { 'glusterfs.ca':
             ensure => 'present',
-            source => 'puppet:///ssl/ca/Sectigo.crt',
+            source => 'puppet:///modules/ssl/ca/Sectigo.crt',
             path   => '/usr/lib/ssl/glusterfs.ca',
             owner  => 'root',
             group  => 'root',
@@ -123,7 +123,7 @@ define gluster::mount (
         }
     }
 
-    $base_options = "defaults,transport=tcp,noauto,x-systemd.automount,noexec,xlator-option=transport.address-family=inet6"
+    $base_options = 'defaults,transport=tcp,noauto,x-systemd.automount,noexec,xlator-option=transport.address-family=inet6'
 
     $mount_options = $options ? {
         undef   => $base_options,

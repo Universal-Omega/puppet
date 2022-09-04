@@ -18,7 +18,7 @@ class dns {
 
     file { '/usr/share/GeoIP/GeoLite2-Country.mmdb':
         ensure => present,
-        source => 'puppet:///private/geoip/GeoLite2-Country.mmdb',
+        source => 'puppet:///modules/private/geoip/GeoLite2-Country.mmdb',
         mode   => '0444',
         notify => Exec['gdnsd-syntax'],
     }

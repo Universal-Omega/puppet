@@ -4,16 +4,16 @@ class gluster {
     include gluster::apt
 
     ssl::wildcard { 'gluster wildcard': }
-    
+
     package { 'glusterfs-server':
-        ensure   => installed,
-        require  => Class['gluster::apt'],
+        ensure  => installed,
+        require => Class['gluster::apt'],
     }
 
     if !defined(File['glusterfs.pem']) {
         file { 'glusterfs.pem':
             ensure => 'present',
-            source => 'puppet:///ssl/certificates/wildcard.miraheze.org-2020-2.crt',
+            source => 'puppet:///modules/ssl/certificates/wildcard.miraheze.org-2020-2.crt',
             path   => '/usr/lib/ssl/glusterfs.pem',
             owner  => 'root',
             group  => 'root',
@@ -23,7 +23,7 @@ class gluster {
     if !defined(File['glusterfs.key']) {
         file { 'glusterfs.key':
             ensure => 'present',
-            source => 'puppet:///ssl-keys/wildcard.miraheze.org-2020-2.key',
+            source => 'puppet:///modules/ssl-keys/wildcard.miraheze.org-2020-2.key',
             path   => '/usr/lib/ssl/glusterfs.key',
             owner  => 'root',
             group  => 'root',
@@ -34,7 +34,7 @@ class gluster {
     if !defined(File['glusterfs.ca']) {
         file { 'glusterfs.ca':
             ensure => 'present',
-            source => 'puppet:///ssl/ca/Sectigo.crt',
+            source => 'puppet:///modules/ssl/ca/Sectigo.crt',
             path   => '/usr/lib/ssl/glusterfs.ca',
             owner  => 'root',
             group  => 'root',
@@ -76,8 +76,8 @@ class gluster {
     if lookup('gluster_client', {'default_value' => false}) {
         if !defined(Gluster::Mount['/mnt/mediawiki-static']) {
             gluster::mount { '/mnt/mediawiki-static':
-              ensure    => mounted,
-              volume    => lookup('gluster_volume', {'default_value' => 'gluster101.miraheze.org:/static'}),
+              ensure => mounted,
+              volume => lookup('gluster_volume', {'default_value' => 'gluster101.miraheze.org:/static'}),
             }
         }
 
@@ -93,7 +93,7 @@ class gluster {
                 '/var/log/glusterfs/glusterd.log',
                 { 'flags' => 'no-parse' }
             ],
-            program_name => 'glusterd',
+            program_name        => 'glusterd',
         }
     } else {
         rsyslog::input::file { 'glusterd':
