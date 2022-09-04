@@ -3,7 +3,14 @@ name: Puppet Lint
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**.pp'
+      - '.github/**'
+
   pull_request:
+    paths:
+      - '**.pp'
+      - '.github/**'
 
 jobs:
   puppet-lint:
