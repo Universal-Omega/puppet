@@ -68,6 +68,7 @@ img-src:
   - 'data:'
   - '*.miraheze.org'
   - '*.betaheze.org'
+  - '*.wikitide.net'
   - 'upload.wikimedia.org'
   - 'wikimedia.org'
   - 'maps.google.com'
