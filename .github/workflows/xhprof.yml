@@ -6,39 +6,45 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        version: [ 8.4 ]
+        version: [ '8.4' ]
 
-    runs-on: ubuntu-latest
     container:
-      image: php:${{ matrix.version }}
+      image: php:${{ matrix.version }}-cli
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: php-config
-      id: php_config
-      run: mkdir extension && echo "::set-output name=EXTENSION_DIR::$(php-config --extension-dir)"
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          apt-get install -y git build-essential autoconf
 
-    - name: phpize
-      run: phpize .
-      working-directory: ./extension
+      - name: Clone xhprof
+        run: git clone https://github.com/longxinH/xhprof.git
 
-    - name: configure
-      run: ./configure
-      working-directory: ./extension
+      - name: Build extension
+        run: |
+          cd xhprof/extension
+          phpize
+          ./configure --with-php-config=$(which php-config)
+          make
+          make install
 
-    - name: make
-      run: make
-      working-directory: ./extension
+      - name: Get extension dir
+        id: php_config
+        run: echo "EXTENSION_DIR=$(php-config --extension-dir)" >> $GITHUB_OUTPUT
 
-    - name: install
-      run: make install
-      working-directory: ./extension
+      - name: Verify build
+        run: |
+          ls -lah ${{ steps.php_config.outputs.EXTENSION_DIR }}
+          test -f "${{ steps.php_config.outputs.EXTENSION_DIR }}/xhprof.so"
 
-    - name: upload
-      uses: actions/upload-artifact@v4.0.0
-      with:
-        name: artifacts-${{ matrix.version }}
-        path: ${{ steps.php_config.outputs.EXTENSION_DIR }}/xhprof.so
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: xhprof-${{ matrix.version }}
+          path: ${{ steps.php_config.outputs.EXTENSION_DIR }}/xhprof.so
