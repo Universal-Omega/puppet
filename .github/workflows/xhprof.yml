@@ -19,7 +19,7 @@ jobs:
 
     - name: php-config
       id: php_config
-      run: echo "::set-output name=EXTENSION_DIR::$(php-config --extension-dir)"
+      run: mkdir extension && echo "::set-output name=EXTENSION_DIR::$(php-config --extension-dir)"
 
     - name: phpize
       run: phpize .
