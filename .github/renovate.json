@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": [
-		"config:best-practices"
+		"config:recommended"
 	],
 	"labels": [
 		"dependencies"
@@ -12,6 +12,7 @@
 	"enabledManagers": [
 		"github-actions",
 		"pip_requirements",
+		"bundler",
 		"custom.regex"
 	],
 	"ignorePaths": [
@@ -19,6 +20,7 @@
 		"modules/*/.gitlab-ci.yml"
 	],
 	"vulnerabilityAlerts": {
+		"enabled": true,
 		"labels": [
 			"security"
 		],
@@ -144,6 +146,12 @@
 	"packageRules": [
 		{
 			"matchManagers": [
+				"bundler"
+			],
+			"enabled": false
+		},
+		{
+			"matchManagers": [
 				"github-actions"
 			],
 			"groupName": "github actions"
@@ -194,6 +202,16 @@
 				"dependencies",
 				"server-software"
 			]
+		},
+		{
+			"matchDepNames": [
+				"opensearch-project/OpenSearch"
+			],
+			"matchFileNames": [
+				"modules/graylog/**"
+			],
+			"separateMajorMinor": false
 		}
-	]
+	],
+	"osvVulnerabilityAlerts": true
 }
