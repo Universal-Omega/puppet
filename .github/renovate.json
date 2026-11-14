@@ -88,17 +88,6 @@
 		{
 			"customType": "regex",
 			"managerFilePatterns": [
-				"/^modules/bots/manifests/irclogbot\\.pp$/"
-			],
-			"matchStrings": [
-				"origin\\s*=>\\s*'https://github\\.com/(?<depName>mwclient/mwclient)',\\s*\\n\\s*branch\\s*=>\\s*'(?<currentValue>v\\d+(?:\\.\\d+)*)'"
-			],
-			"datasourceTemplate": "github-tags",
-			"versioningTemplate": "semver"
-		},
-		{
-			"customType": "regex",
-			"managerFilePatterns": [
 				"/^modules/salt/manifests/init\\.pp$/"
 			],
 			"matchStrings": [
