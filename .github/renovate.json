@@ -12,12 +12,13 @@
 	"enabledManagers": [
 		"github-actions",
 		"pip_requirements",
-		"bundler",
 		"custom.regex"
 	],
 	"ignorePaths": [
 		"modules/*/.github/**",
-		"modules/*/.gitlab-ci.yml"
+		"modules/*/.gitlab-ci.yml",
+		"modules/*/Gemfile",
+		"modules/*/Gemfile.lock"
 	],
 	"vulnerabilityAlerts": {
 		"enabled": true,
@@ -145,12 +146,6 @@
 		}
 	],
 	"packageRules": [
-		{
-			"matchManagers": [
-				"bundler"
-			],
-			"enabled": false
-		},
 		{
 			"matchManagers": [
 				"github-actions"
