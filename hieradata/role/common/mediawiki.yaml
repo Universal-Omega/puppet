@@ -4,6 +4,10 @@ users::groups:
 
 contactgroups: ['infra', 'mediawiki']
 
+base::dns::do_ipv4: true
+base::dns::do_ipv6: false
+base::dns::forward_use_internal: true
+
 jobrunner: false
 
 role::mediawiki::use_strict_firewall: true
@@ -32,7 +36,7 @@ mediawiki::php::fpm_config:
 role::mediawiki::php::restarts::ensure: present
 role::mediawiki::php::restarts::opcache_limit: 200
   
-php::php_version: '8.2'
+php::php_version: '8.4'
 
 http_proxy: 'http://bastion.fsslc.wtnet:8080'
 

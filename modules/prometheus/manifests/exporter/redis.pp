@@ -15,7 +15,7 @@ class prometheus::exporter::redis (
         mode    => '0555',
         owner   => 'root',
         group   => 'root',
-        content => template('prometheus/redis/prometheus-jobqueue-stats.py.erb')
+        content => epp('prometheus/redis/prometheus-jobqueue-stats.py.epp', { 'redis_password' => $redis_password })
     }
 
     file { '/etc/redis_exporter':
@@ -36,7 +36,7 @@ class prometheus::exporter::redis (
 
     file { '/etc/default/prometheus-redis':
         ensure  => present,
-        content => template('prometheus/prometheus-redis-default.erb'),
+        content => epp('prometheus/prometheus-redis-default.epp', { 'redis_password' => $redis_password }),
         notify  => Service['prometheus-redis-exporter'],
     }
 
@@ -63,25 +63,13 @@ class prometheus::exporter::redis (
         user            => 'root',
     }
 
-    $firewall_rules_str = join(
-        query_facts('Class[Role::Prometheus]', ['networking'])
-        .map |$key, $value| {
-            if ( $value['networking']['interfaces']['ens19'] and $value['networking']['interfaces']['ens18'] ) {
-                "${value['networking']['interfaces']['ens19']['ip']} ${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-            } elsif ( $value['networking']['interfaces']['ens18'] ) {
-                "${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-            } else {
-                "${value['networking']['ip']} ${value['networking']['ip6']}"
-            }
-        }
-        .flatten()
-        .unique()
-        .sort(),
-        ' '
-    )
-    ferm::service { 'prometheus redis_exporter':
+    $subquery = @("PQL")
+    resources { type = 'Class' and title = 'Role::Prometheus' }
+    | PQL
+    $firewall_rules_str = vmlib::generate_firewall_ip($subquery)
+    firewall::service { 'prometheus redis_exporter':
         proto  => 'tcp',
-        port   => '9121',
+        port   => 9121,
         srange => "(${firewall_rules_str})",
     }
 }

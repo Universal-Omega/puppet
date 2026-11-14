@@ -10,29 +10,18 @@ class role::puppetdb {
     prometheus::exporter::jmx { "puppetdb_${facts['networking']['hostname']}":
         port        => 9401,
         config_file => '/etc/puppetlabs/puppetdb/jvm_prometheus_jmx_exporter.yaml',
-        content     => template('role/puppetdb/jvm_prometheus_jmx_exporter.yaml.erb'),
+        content     => epp('role/puppetdb/jvm_prometheus_jmx_exporter.yaml.epp'),
         notify      => Service['puppetdb']
     }
 
-    $firewall_rules_str = join(
-        query_facts('Class[Role::Puppetserver] or Class[Role::Icinga2]', ['networking'])
-        .map |$key, $value| {
-            if ( $value['networking']['interfaces']['ens19'] and $value['networking']['interfaces']['ens18'] ) {
-                "${value['networking']['interfaces']['ens19']['ip']} ${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-            } elsif ( $value['networking']['interfaces']['ens18'] ) {
-                "${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-            } else {
-                "${value['networking']['ip']} ${value['networking']['ip6']}"
-            }
-        }
-        .flatten()
-        .unique()
-        .sort(),
-        ' '
-    )
-    ferm::service { 'puppetdb port 8081':
+    $subquery = @("PQL")
+    (resources { type = 'Class' and title = 'Role::Puppetserver' } or
+    resources { type = 'Class' and title = 'Role::Icinga2' })
+    | PQL
+    $firewall_rules_str = vmlib::generate_firewall_ip($subquery)
+    firewall::service { 'puppetdb port 8081':
         proto  => 'tcp',
-        port   => '8081',
+        port   => 8081,
         srange => "(${firewall_rules_str})",
     }
 

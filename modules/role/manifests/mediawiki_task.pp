@@ -1,13 +1,10 @@
 # === Class role::mediawiki_task
 class role::mediawiki_task (
     Boolean $strict_firewall = lookup('role::mediawiki::use_strict_firewall', {'default_value' => false}),
-    Boolean $use_mcrouter = lookup('role::mediawiki::use_mcrouter', {'default_value' => false})
+    Boolean $use_mcrouter = lookup('role::mediawiki::use_mcrouter', {'default_value' => false}),
 ) {
     include base
     include role::mathoid
-
-    # doesn't install on bookworm
-    # include prometheus::exporter::cadvisor
 
     if $use_mcrouter {
         include role::mediawiki::mcrouter
@@ -15,49 +12,46 @@ class role::mediawiki_task (
         include role::mediawiki::nutcracker
     }
     include mediawiki
+    include haproxy::lb_agent
     include role::mediawiki::php::restarts
 
     if $strict_firewall {
-        $firewall_rules_str = join(
-            query_facts('Class[Role::Mediawiki] or Class[Role::Mediawiki_task] or Class[Role::Varnish] or Class[Role::Cache::Cache] or Class[Role::Icinga2] or Class[Role::Prometheus] or Class[Role::Bastion] or Class[Role::Eventgate] or Class[Role::Changeprop]', ['networking'])
-            .map |$key, $value| {
-                if ( $value['networking']['interfaces']['ens19'] and $value['networking']['interfaces']['ens18'] ) {
-                    "${value['networking']['interfaces']['ens19']['ip']} ${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-                } elsif ( $value['networking']['interfaces']['ens18'] ) {
-                    "${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-                } else {
-                    "${value['networking']['ip']} ${value['networking']['ip6']}"
-                }
-            }
-            .flatten()
-            .unique()
-            .sort(),
-            ' '
-        )
+        $subquery = @("PQL")
+        (resources { type = 'Class' and title = 'Role::Mediawiki' } or
+        resources { type = 'Class' and title = 'Role::Mediawiki_task' } or
+        resources { type = 'Class' and title = 'Role::Varnish' } or
+        resources { type = 'Class' and title = 'Role::Cache::Cache' } or
+        resources { type = 'Class' and title = 'Role::Prometheus' } or
+        resources { type = 'Class' and title = 'Role::Bastion' } or
+        resources { type = 'Class' and title = 'Role::Eventgate' } or
+        resources { type = 'Class' and title = 'Role::Changeprop' } or
+        resources { type = 'Class' and title = 'Role::Icinga2' })
+        | PQL
+        $firewall_rules_str = vmlib::generate_firewall_ip($subquery)
 
-        ferm::service { 'http':
+        firewall::service { 'http':
             proto   => 'tcp',
-            port    => '80',
+            port    => 80,
             srange  => "(${firewall_rules_str})",
             notrack => true,
         }
 
-        ferm::service { 'https':
+        firewall::service { 'https':
             proto   => 'tcp',
-            port    => '443',
+            port    => 443,
             srange  => "(${firewall_rules_str})",
             notrack => true,
         }
     } else {
-        ferm::service { 'http':
+        firewall::service { 'http':
             proto   => 'tcp',
-            port    => '80',
+            port    => 80,
             notrack => true,
         }
 
-        ferm::service { 'https':
+        firewall::service { 'https':
             proto   => 'tcp',
-            port    => '443',
+            port    => 443,
             notrack => true,
         }
     }

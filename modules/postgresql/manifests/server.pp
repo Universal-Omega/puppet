@@ -33,9 +33,6 @@ class postgresql::server(
 ) {
 
     case $facts['os']['distro']['codename'] {
-        'bookworm': {
-            $_pgversion_default = 15
-        }
         'trixie': {
             $_pgversion_default = 17
         }
@@ -94,7 +91,7 @@ class postgresql::server(
 
         file { "/etc/postgresql/${_pgversion}/main/ssl.conf":
             ensure  => $ensure,
-            content => template('postgresql/ssl.conf.erb'),
+            content => epp('postgresql/ssl.conf.epp', { '_pgversion' => $_pgversion }),
             owner   => 'root',
             group   => 'root',
             mode    => '0444',

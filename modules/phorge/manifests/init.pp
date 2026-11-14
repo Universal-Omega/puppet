@@ -10,7 +10,7 @@ class phorge (
         'pcre.backtrack_limit'            => 5000000,
         'date.timezone'                   => 'UTC',
         'display_errors'                  => 0,
-        'error_reporting'                 => 'E_ALL & ~E_STRICT',
+        'error_reporting'                 => 'E_ALL',
         'mysql'                           => { 'connect_timeout' => 3 },
         'default_socket_timeout'          => 60,
         'enable_dl'                       => 0,
@@ -39,7 +39,7 @@ class phorge (
         'zip',
     ]
 
-    $php_version = lookup('php::php_version', {'default_value' => '8.4'})
+    $php_version = lookup('php::php_version')
 
     # Install the runtime
     class { 'php':
@@ -162,7 +162,9 @@ class phorge (
     $module_path = get_module_path($module_name)
     $phorge_yaml = loadyaml("${module_path}/data/config.yaml")
     $phorge_private = {
-        'mysql.pass' => lookup('passwords::db::phorge'),
+        'mysql.pass'            => lookup('passwords::db::phorge'),
+        'github.webhook-secret' => lookup('passwords::phorge::github_webhook_secret', {'default_value' => ''}),
+        'github.api-token'      => lookup('passwords::phorge::github_api_token', {'default_value' => ''}),
     }
 
     $phorge_setting = {

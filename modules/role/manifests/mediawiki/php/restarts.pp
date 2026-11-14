@@ -4,7 +4,7 @@ class role::mediawiki::php::restarts (
 ) {
   stdlib::ensure_packages('python3-pyotp')
 
-  $php_version = lookup('php::php_version', {'default_value' => '8.2'})
+  $php_version = lookup('php::php_version')
 
   # Check, then restart php-fpm if needed.
   # This implicitly depends on the other MediaWiki/PHP profiles
@@ -27,10 +27,15 @@ class role::mediawiki::php::restarts (
     }
   }
 
-  $mediawiki_hosts = query_facts("Class['Role::Mediawiki']", ['networking'])
-  $mediawiki_nodes = $mediawiki_hosts.keys().flatten().unique().sort()
+  $subquery = @("PQL")
+  resources { type = 'Class' and title = 'Role::Mediawiki' }
+  | PQL
+  $mediawiki_nodes = puppetdb::query_facts(
+    ['networking'],
+    $subquery
+  ).keys().flatten.sort.unique
 
-  $varnish_totp_secret = lookup('passwords::varnish::varnish_totp_secret')
+  $totp_secret = lookup('passwords::haproxy::totp_secret')
   file { '/usr/local/bin/safe-service-restart':
     ensure => present,
     owner  => 'root',

@@ -30,7 +30,7 @@ class mediawiki::deploy {
         }
 
         file { '/var/www/.ssh/known_hosts':
-            content => template('mediawiki/mw-user-known-hosts.erb'),
+            content => epp('mediawiki/mw-user-known-hosts.epp'),
             owner   => 'www-data',
             group   => 'www-data',
             mode    => '0644',
@@ -54,9 +54,12 @@ class mediawiki::deploy {
     stdlib::ensure_packages(
         'langcodes',
         {
-            ensure   => '3.3.0',
+            ensure   => '3.5.1',
             provider => 'pip3',
-            install_options => [ '--break-system-packages' ],
+            install_options => [
+                '--break-system-packages',
+                { '--proxy' => 'http://bastion.fsslc.wtnet:8080' },
+            ],
             before   => File['/usr/local/bin/mwdeploy'],
             require  => Package['python3-pip'],
         },
@@ -67,6 +70,54 @@ class mediawiki::deploy {
         owner  => 'www-data',
         group  => 'www-data',
         mode   => '0755',
+    }
+
+    file { '/srv/mediawiki-staging/patches':
+        ensure  => 'directory',
+        owner   => 'www-data',
+        group   => 'www-data',
+        mode    => '0755',
+        require => File['/srv/mediawiki-staging'],
+    }
+
+    file { '/srv/mediawiki-staging/patches/public.json':
+        ensure  => 'file',
+        owner   => 'www-data',
+        group   => 'www-data',
+        mode    => '0644',
+        source  => 'puppet:///mediawiki-repos/patches/public.json',
+        require => File['/srv/mediawiki-staging/patches'],
+    }
+
+    file { '/srv/mediawiki-staging/patches/private.json':
+        ensure  => 'file',
+        owner   => 'www-data',
+        group   => 'www-data',
+        mode    => '0644',
+        source  => 'puppet:///mediawiki-repos/patches/private/private.json',
+        require => File['/srv/mediawiki-staging/patches'],
+    }
+
+    file { '/srv/mediawiki-staging/patches/public':
+        ensure  => 'directory',
+        owner   => 'www-data',
+        group   => 'www-data',
+        mode    => '0755',
+        source  => 'puppet:///mediawiki-repos/patches/public',
+        purge   => true,
+        recurse => true,
+        require => File['/srv/mediawiki-staging/patches'],
+    }
+
+    file { '/srv/mediawiki-staging/patches/private':
+        ensure  => 'directory',
+        owner   => 'www-data',
+        group   => 'www-data',
+        mode    => '0755',
+        source  => 'puppet:///mediawiki-repos/patches/private/patches',
+        purge   => true,
+        recurse => true,
+        require => File['/srv/mediawiki-staging/patches'],
     }
 
     file { '/usr/local/bin/mwdeploy':

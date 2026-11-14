@@ -30,27 +30,27 @@ nginx::config:
   proxy_send_timeout:    300s
   proxy_read_timeout:    300s
 
-mediawiki::php::request_timeout: 201
+mediawiki::php::request_timeout: 259201
 mediawiki::php::fpm::fpm_workers_multiplier: 2.0
 mediawiki::php::fpm_config:
   post_max_size: '250M'
   upload_max_filesize: '250M'
   max_execution_time: 210
 
-mediawiki::php::enable_request_profiling: true
-
 mediawiki::use_staging: true
 mediawiki::monitoring::host: 'test.mirabeta.org'
 
 mediawiki::multiversion::versions:
-  '1.45':
-    branch: 'REL1_45'
+  '1.46':
+    branch: 'REL1_46'
+  '1.47':
+    branch: 'REL1_47'
     default: true
 
 role::mediawiki::php::restarts::ensure: present
 role::mediawiki::php::restarts::opcache_limit: 200
 
-php::php_version: '8.2'
+php::php_version: '8.4'
 
 http_proxy: 'http://bastion.fsslc.wtnet:8080'
 

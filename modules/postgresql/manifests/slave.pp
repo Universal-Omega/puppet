@@ -36,8 +36,7 @@ class postgresql::slave(
 ) {
 
     $pgversion = $facts['os']['distro']['codename'] ? {
-        'bookworm' => 15,
-        'trixie'   => 17,
+        'trixie' => 17,
     }
 
     $data_dir = "${root_dir}/${pgversion}/main"
@@ -64,7 +63,7 @@ class postgresql::slave(
         owner   => 'root',
         group   => 'root',
         mode    => '0444',
-        content => template('postgresql/recovery.conf.erb'),
+        content => epp('postgresql/recovery.conf.epp', { 'master_server' => $master_server, 'replication_pass' => $replication_pass, 'use_ssl' => $use_ssl }),
         before  => Class['postgresql::server'],
         require => Exec["pg_basebackup-${master_server}"],
     }

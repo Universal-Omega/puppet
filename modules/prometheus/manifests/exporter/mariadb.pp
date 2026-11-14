@@ -56,7 +56,7 @@ class prometheus::exporter::mariadb {
         mode    => '0400',
         owner   => 'prometheus',
         group   => 'prometheus',
-        content => template('prometheus/mysqld_exporter.cnf.erb'),
+        content => epp('prometheus/mysqld_exporter.cnf.epp', { 'exporter_password' => $exporter_password }),
         notify  => Service['prometheus-mysqld-exporter'],
     }
 
@@ -64,25 +64,13 @@ class prometheus::exporter::mariadb {
         ensure => running,
     }
 
-    $firewall_rules_str = join(
-        query_facts('Class[Prometheus]', ['networking'])
-        .map |$key, $value| {
-            if ( $value['networking']['interfaces']['ens19'] and $value['networking']['interfaces']['ens18'] ) {
-                "${value['networking']['interfaces']['ens19']['ip']} ${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-            } elsif ( $value['networking']['interfaces']['ens18'] ) {
-                "${value['networking']['interfaces']['ens18']['ip']} ${value['networking']['interfaces']['ens18']['ip6']}"
-            } else {
-                "${value['networking']['ip']} ${value['networking']['ip6']}"
-            }
-        }
-        .flatten()
-        .unique()
-        .sort(),
-        ' '
-    )
-    ferm::service { 'prometheus mysqld_exporter':
+    $subquery = @("PQL")
+    resources { type = 'Class' and title = 'Prometheus' }
+    | PQL
+    $firewall_rules_str = vmlib::generate_firewall_ip($subquery)
+    firewall::service { 'prometheus mysqld_exporter':
         proto  => 'tcp',
-        port   => '9104',
+        port   => 9104,
         srange => "(${firewall_rules_str})",
     }
 }
