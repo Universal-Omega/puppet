@@ -53,25 +53,13 @@
 				"/^modules/role/manifests/graylog\\.pp$/"
 			],
 			"matchStrings": [
-				"version\\s*=>\\s*(?<replaceString>'\\d+\\.\\d+',\\s*\\n\\s*\\}\\s*\\n\\s*->\\s*class\\s*\\{\\s*'graylog::server':\\s*\\n\\s*package_version\\s*=>\\s*'(?<currentValue>\\d+\\.\\d+\\.\\d+)-\\d+')"
-			],
-			"depNameTemplate": "Graylog2/graylog2-server",
-			"datasourceTemplate": "github-tags",
-			"versioningTemplate": "semver",
-			"autoReplaceStringTemplate": "'{{{replace '\\.\\d+$' '' newValue}}}',\n    }\n    -> class { 'graylog::server':\n        package_version        => '{{{newValue}}}-1'"
-		},
-		{
-			"customType": "regex",
-			"managerFilePatterns": [
-				"/^modules/role/manifests/graylog\\.pp$/"
-			],
-			"matchStrings": [
-				"graylog::repository':[^}]*?version\\s*=>\\s*'(?<repoVersion>\\d+\\.\\d+)',[^}]*?\\}\\s*->\\s*class\\s*\\{\\s*'graylog::server':\\s*package_version\\s*=>\\s*'(?<currentValue>[^']+)'"
+				"version\\s*=>\\s*(?<replaceString>'(?<repoVersion>\\d+\\.\\d+)',\\s*\\n\\s*\\}\\s*\\n\\s*->\\s*class\\s*\\{\\s*'graylog::server':\\s*\\n\\s*package_version\\s*=>\\s*'(?<currentValue>[^']+)')"
 			],
 			"depNameTemplate": "graylog-server",
 			"datasourceTemplate": "deb",
 			"versioningTemplate": "deb",
-			"registryUrlTemplate": "https://downloads.graylog.org/repo/debian?suite=stable&components={{{repoVersion}}}&binaryArch=amd64"
+			"registryUrlTemplate": "https://downloads.graylog.org/repo/debian?suite=stable&components={{{repoVersion}}}&binaryArch=amd64",
+			"autoReplaceStringTemplate": "'{{{replace '\\.\\d+-\\d+$' '' newValue}}}',\n    }\n    -> class { 'graylog::server':\n        package_version        => '{{{newValue}}}'"
 		},
 		{
 			"customType": "regex",
@@ -182,28 +170,11 @@
 		},
 		{
 			"matchDepNames": [
-				"Graylog2/graylog2-server"
-			],
-			"groupName": "graylog",
-			"matchUpdateTypes": [
-				"major",
-				"minor"
-			]
-		},
-		{
-			"matchDepNames": [
-				"Graylog2/graylog2-server"
-			],
-			"matchUpdateTypes": [
-				"patch"
-			],
-			"enabled": false
-		},
-		{
-			"matchDepNames": [
 				"graylog-server"
 			],
-			"groupName": "graylog revision"
+			"groupName": "graylog",
+			"separateMajorMinor": false,
+			"allowedVersions": "/^\\d+\\.\\d+\\.\\d+-\\d+$/"
 		},
 		{
 			"matchDepNames": [
@@ -212,8 +183,7 @@
 				"miraheze/TSPortal",
 				"opensearch-project/OpenSearch",
 				"mattermost/mattermost",
-				"graylog-server",
-				"Graylog2/graylog2-server"
+				"graylog-server"
 			],
 			"automerge": false,
 			"labels": [
