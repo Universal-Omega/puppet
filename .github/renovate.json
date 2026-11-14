@@ -6,11 +6,18 @@
 	"labels": [
 		"dependencies"
 	],
-	"schedule": [
-		"before 6am on monday"
-	],
 	"prConcurrentLimit": 10,
+	"prHourlyLimit": 0,
 	"dependencyDashboard": true,
+	"enabledManagers": [
+		"github-actions",
+		"pip_requirements",
+		"custom.regex"
+	],
+	"ignorePaths": [
+		"modules/*/.github/**",
+		"modules/*/.gitlab-ci.yml"
+	],
 	"vulnerabilityAlerts": {
 		"labels": [
 			"security"
@@ -34,7 +41,33 @@
 				"origin\\s*=>\\s*'https://github\\.com/(?<depName>matomo-org/matomo)',\\s*\\n\\s*branch\\s*=>\\s*'(?<currentValue>[^']+)'"
 			],
 			"datasourceTemplate": "github-releases",
-			"versioningTemplate": "semver-coerced"
+			"versioningTemplate": "semver"
+		},
+		{
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/^modules/role/manifests/graylog\\.pp$/"
+			],
+			"matchStrings": [
+				"package_version\\s*=>\\s*'(?<currentValue>\\d+\\.\\d+\\.\\d+)-1'"
+			],
+			"depNameTemplate": "Graylog2/graylog2-server",
+			"datasourceTemplate": "github-tags",
+			"versioningTemplate": "semver"
+		},
+		{
+			"customType": "regex",
+			"managerFilePatterns": [
+				"/^modules/role/manifests/graylog\\.pp$/"
+			],
+			"matchStrings": [
+				"graylog::repository':[^}]*?version\\s*=>\\s*'(?<currentValue>\\d+\\.\\d+)'"
+			],
+			"depNameTemplate": "Graylog2/graylog2-server",
+			"packageNameTemplate": "Graylog2/graylog2-server",
+			"datasourceTemplate": "github-tags",
+			"extractVersionTemplate": "^(?<version>\\d+\\.\\d+)\\.\\d+$",
+			"versioningTemplate": "loose"
 		},
 		{
 			"customType": "regex",
@@ -143,11 +176,18 @@
 		},
 		{
 			"matchDepNames": [
+				"Graylog2/graylog2-server"
+			],
+			"groupName": "graylog"
+		},
+		{
+			"matchDepNames": [
 				"saltstack/salt",
 				"matomo-org/matomo",
 				"miraheze/TSPortal",
 				"opensearch-project/OpenSearch",
-				"mattermost/mattermost"
+				"mattermost/mattermost",
+				"Graylog2/graylog2-server"
 			],
 			"automerge": false,
 			"labels": [
