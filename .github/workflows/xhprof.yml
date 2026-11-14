@@ -16,7 +16,7 @@ jobs:
       image: php:${{ matrix.version }}-cli
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install build dependencies
         run: |
@@ -44,7 +44,7 @@ jobs:
           test -f "${{ steps.php_config.outputs.EXTENSION_DIR }}/xhprof.so"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: xhprof-${{ matrix.version }}
           path: ${{ steps.php_config.outputs.EXTENSION_DIR }}/xhprof.so
