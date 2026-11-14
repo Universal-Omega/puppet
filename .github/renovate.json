@@ -59,7 +59,7 @@
 			"datasourceTemplate": "deb",
 			"versioningTemplate": "deb",
 			"registryUrlTemplate": "https://downloads.graylog.org/repo/debian?suite=stable&components={{{repoVersion}}}&binaryArch=amd64",
-			"autoReplaceStringTemplate": "'{{{replace '\\.\\d+-\\d+$' '' newValue}}}',\n    }\n    -> class { 'graylog::server':\n        package_version        => '{{{newValue}}}'"
+			"autoReplaceStringTemplate": "version => '{{{replace '\\.\\d+-\\d+$' '' newValue}}}',\n    }\n    -> class { 'graylog::server':\n        package_version        => '{{{newValue}}}'"
 		},
 		{
 			"customType": "regex",
