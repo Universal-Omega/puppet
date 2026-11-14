@@ -26,7 +26,8 @@
 		],
 		"schedule": [
 			"at any time"
-		]
+		],
+		"groupName": "{{#if (equals manager 'pip_requirements')}}python test tooling{{else if (equals manager 'github-actions')}}github actions{{else}}{{{depNameSanitized}}}-vulnerability{{/if}}"
 	},
 	"pip_requirements": {
 		"managerFilePatterns": [
