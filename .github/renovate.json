@@ -154,13 +154,15 @@
 			"matchManagers": [
 				"github-actions"
 			],
-			"groupName": "github actions"
+			"groupName": "github actions",
+			"separateMajorMinor": false
 		},
 		{
 			"matchManagers": [
 				"pip_requirements"
 			],
-			"groupName": "python test tooling"
+			"groupName": "python test tooling",
+			"separateMajorMinor": false
 		},
 		{
 			"matchDepNames": [
