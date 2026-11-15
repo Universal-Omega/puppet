@@ -10,7 +10,7 @@ class bots::irclogbot {
         ensure    => present,
         directory => '/etc/irclogbot/mwclient',
         origin    => 'https://github.com/mwclient/mwclient',
-        revision  => '6cdad9d',
+        revision  => '8711373',
         require   => File['/etc/irclogbot'],
         notify    => Service['logbot'],
     }
