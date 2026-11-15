@@ -108,8 +108,8 @@
 			],
 			"depNameTemplate": "mwclient/mwclient",
 			"datasourceTemplate": "custom.mwclient-latest",
-			"versioningTemplate": "git",
-			"currentValueTemplate": "HEAD"
+			"versioningTemplate": "semver",
+			"currentValueTemplate": "1.0.0"
 		},
 		{
 			"customType": "regex",
@@ -260,7 +260,7 @@
 			"defaultRegistryUrlTemplate": "https://api.github.com/repos/mwclient/mwclient/commits/HEAD",
 			"format": "json",
 			"transformTemplates": [
-				"{\"releases\":[{\"version\":\"HEAD\",\"digest\":$substring(sha,0,7)}]}"
+				"{\"releases\":[{\"version\":\"1.0.0\",\"digest\":$substring(sha,0,7)}]}"
 			]
 		}
 	}
