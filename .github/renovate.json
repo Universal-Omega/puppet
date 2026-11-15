@@ -104,7 +104,7 @@
 				"/^modules/bots/manifests/irclogbot\\.pp$/"
 			],
 			"matchStrings": [
-				"\\$mwclient_revision\\s*=\\s*'(?<currentDigest>[0-9a-f]{7})'"
+				"origin\\s*=>\\s*'https://github\\.com/mwclient/mwclient',\\s*\\n\\s*revision\\s*=>\\s*'(?<currentDigest>[0-9a-f]{7})'"
 			],
 			"depNameTemplate": "mwclient/mwclient",
 			"datasourceTemplate": "custom.mwclient-latest",
