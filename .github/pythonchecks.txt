@@ -15,14 +15,14 @@ flake8-pytest==1.4
 flake8-type-checking==3.3.0
 mypy==2.4.1
 types-requests==2.33.0.20261030
-types-PyYAML==6.0.12.20261113
+types-PyYAML==6.0.12.20261122
 pytest-xdist==3.8.0
 flake8-noqa==1.5.0
-coverage==7.17.3
+coverage==7.17.5
 setuptools==84.2.1
 ## ACTUAL
 requests==2.34.2
-filelock==4.2.10
+filelock==4.3.1
 langcodes==3.5.1
-PyYAML==6.0.3
-internetarchive==5.12.1
+PyYAML==6.0.4
+internetarchive==5.13.0
